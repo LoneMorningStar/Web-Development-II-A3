@@ -12,6 +12,7 @@ app.use('/api/categories',    require('./routes/categories'));
 app.use('/api/organisations', require('./routes/organisations'));
 app.use('/api/registrations', require('./routes/registrations'));
 app.use('/api/users',         require('./routes/users'));
+app.use('/api',               require('./routes/upload'));
 
 app.get('/', (req, res) => res.send('Charity Events API is running'));
 

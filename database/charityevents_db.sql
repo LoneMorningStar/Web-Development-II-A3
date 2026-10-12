@@ -45,8 +45,14 @@ CREATE TABLE users (
   password_hash VARCHAR(255) NOT NULL,
   full_name     VARCHAR(150) NOT NULL,
   phone         VARCHAR(40),
+  is_admin      TINYINT(1) NOT NULL DEFAULT 0,
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+-- Default administrator account (email: admin@pingxiang.org / password: admin123)
+INSERT INTO users (email, password_hash, full_name, is_admin) VALUES
+('admin@pingxiang.org', '$2b$10$R9p3YGtfja9IfefgdOUikeojI3Na3XVyoIhYf9PczM1MvAIzxoHC.', 'Administrator', 1);
 
 
 CREATE TABLE registrations (

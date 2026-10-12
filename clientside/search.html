@@ -24,6 +24,7 @@
   <div class="overlay" id="overlay" ng-controller="NavController">
     <a href="index.html">Home</a>
     <a href="search.html">Search Events</a>
+    <a href="admin.html" ng-if="isAdmin">Admin</a>
     <a href="login.html" ng-if="!isLoggedIn">Log in</a>
     <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
     <a href="#" ng-if="isLoggedIn" ng-click="logout()">Log out ({{ user.full_name }})</a>
@@ -38,7 +39,7 @@
   </section>
 
   <section class="search-section">
-    <form id="search-form" class="search-form" ng-submit="search()" novalidate>
+    <form id="search-form" class="search-form" ng-submit="search()" novalidate data-reveal>
       <div class="search-form__grid">
         <div class="field">
           <label for="date">Date</label>
@@ -66,7 +67,7 @@
   </section>
 
   <section class="results">
-    <div class="results-head">
+    <div class="results-head" data-reveal>
       <p class="eyebrow">Results</p>
       <h2 class="display" id="results-title">{{ searched && !loading ? (results.length === 1 ? results.length + ' event found' : results.length + ' events found') : 'Matching events' }}</h2>
     </div>

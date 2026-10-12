@@ -71,7 +71,8 @@ router.post('/login', async (req, res) => {
         user_id: user.user_id,
         email: user.email,
         full_name: user.full_name,
-        phone: user.phone
+        phone: user.phone,
+        is_admin: Number(user.is_admin) === 1
       }
     });
   } catch (err) {

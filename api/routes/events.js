@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../event_db');
+const requireAdmin = require('../middleware/requireAdmin');
 
 // Columns used by the event detail / admin queries.
 const EVENT_SELECT = `
@@ -126,7 +127,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/events  -> create a new charity event (admin).
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const {
       event_name, description, event_date, location,
@@ -174,7 +175,7 @@ router.post('/', async (req, res) => {
 });
 
 // PUT /api/events/:id  -> update an existing event (admin).
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     if (!/^\d+$/.test(id)) {
@@ -230,7 +231,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /api/events/:id  -> only allowed when no registrations exist.
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     if (!/^\d+$/.test(id)) {

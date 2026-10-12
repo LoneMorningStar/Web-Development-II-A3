@@ -10,12 +10,13 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body ng-app="adminApp" ng-controller="CreateController">
-  <header class="admin-nav">
+  <header class="admin-nav" ng-controller="AdminNavController">
     <div class="admin-nav__inner">
       <a class="admin-nav__logo" href="index.html">PingXiang Charity <span>Admin</span></a>
       <nav class="admin-nav__links">
         <a href="index.html">Dashboard</a>
         <a href="create.html" class="is-active">New event</a>
+        <a href="#" ng-click="logout()">Log out</a>
       </nav>
     </div>
   </header>

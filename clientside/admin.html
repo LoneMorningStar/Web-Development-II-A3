@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PingXiang Charity — Manage Events</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body ng-app="charityApp" ng-controller="AdminController">
+  <header class="site-nav" id="site-nav">
+    <div class="site-nav__inner">
+      <a class="site-nav__logo" href="index.html">PingXiang Charity</a>
+      <button class="site-nav__pill" id="nav-toggle" type="button">Navigate</button>
+      <span class="site-nav__flower" id="nav-flower"></span>
+      <button class="site-nav__burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="overlay">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="overlay" id="overlay" ng-controller="NavController">
+    <a href="index.html">Home</a>
+    <a href="search.html">Search Events</a>
+    <a href="admin.html" ng-if="isAdmin">Admin</a>
+    <a href="login.html" ng-if="!isLoggedIn">Log in</a>
+    <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
+    <a href="#" ng-if="isLoggedIn" ng-click="logout()">Log out ({{ user.full_name }})</a>
+  </div>
+
+  <main class="detail-main admin-page">
+    <article class="detail-article">
+      <div class="events-head" data-reveal>
+        <div>
+          <p class="eyebrow">Administration</p>
+          <h1 class="detail-head__title">Manage events</h1>
+        </div>
+        <a class="btn btn--solid" href="event-form.html"><ico name="plus" size="16"></ico> Add event</a>
+      </div>
+
+      <p class="error-block" ng-if="error">{{ error }}</p>
+      <p class="message" ng-if="success">{{ success }}</p>
+
+      <div class="empty" ng-if="loading">Loading events...</div>
+
+      <div class="admin-list" ng-if="!loading && events.length > 0">
+        <div class="admin-list__item" ng-repeat="event in events" data-reveal ng-style="{'transition-delay': ($index * 70) + 'ms'}">
+          <div class="admin-list__main">
+            <span class="badge">{{ event.status | statusLabel }}</span>
+            <h3 class="card__name">{{ event.event_name }}</h3>
+            <div class="card__meta">
+              <span><ico name="calendar" size="14"></ico>{{ event.event_date | date:'MMM d, yyyy' }}</span>
+              <span><ico name="mapPin" size="14"></ico>{{ event.location }}</span>
+            </div>
+          </div>
+          <div class="admin-list__actions">
+            <a class="btn btn--outline btn--sm" ng-href="event-form.html#id={{ event.event_id }}"><ico name="edit" size="14"></ico> Edit</a>
+            <button class="btn btn--danger btn--sm" type="button" ng-click="remove(event)" ng-disabled="deletingId === event.event_id"><ico name="trash" size="14"></ico> Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="admin-list__empty" ng-if="!loading && events.length === 0">No events yet. Add your first event.</p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <span class="site-footer__brand">PingXiang Charity</span>
+      <span class="site-footer__copy">&copy; 2026 PingXiang Charity</span>
+      <nav class="site-footer__links">
+        <a href="index.html">Home</a>
+        <a href="search.html">Search</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/angular.min.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/controllers.js"></script>
+</body>
+</html>

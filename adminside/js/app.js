@@ -9,7 +9,7 @@ angular.module('adminApp', [])
       : '/api'
   )
 
-  .factory('ApiService', ['$http', 'API_BASE', function ($http, API_BASE) {
+  .factory('ApiService', ['$http', 'API_BASE', 'AdminAuth', function ($http, API_BASE, AdminAuth) {
     function call(config) {
       return $http(config).then(
         function (res) { return res.data.data; },
@@ -18,6 +18,11 @@ angular.module('adminApp', [])
           throw new Error(msg);
         }
       );
+    }
+
+    function adminHeaders() {
+      var u = AdminAuth.getUser();
+      return (u && u.user_id) ? { 'X-Admin-User': String(u.user_id) } : {};
     }
 
     return {
@@ -33,14 +38,33 @@ angular.module('adminApp', [])
       getOrganisations: function () {
         return call({ method: 'GET', url: API_BASE + '/organisations' });
       },
+      login: function (body) {
+        return call({ method: 'POST', url: API_BASE + '/users/login', data: body });
+      },
       createEvent: function (body) {
-        return call({ method: 'POST', url: API_BASE + '/events', data: body });
+        return call({ method: 'POST', url: API_BASE + '/events', data: body, headers: adminHeaders() });
       },
       updateEvent: function (id, body) {
-        return call({ method: 'PUT', url: API_BASE + '/events/' + id, data: body });
+        return call({ method: 'PUT', url: API_BASE + '/events/' + id, data: body, headers: adminHeaders() });
       },
       deleteEvent: function (id) {
-        return call({ method: 'DELETE', url: API_BASE + '/events/' + id });
+        return call({ method: 'DELETE', url: API_BASE + '/events/' + id, headers: adminHeaders() });
+      }
+    };
+  }])
+
+  /* ---------- Admin auth: admin user kept in localStorage ---------- */
+  .factory('AdminAuth', ['$window', function ($window) {
+    var KEY = 'charity_admin';
+    return {
+      getUser: function () {
+        try { return JSON.parse($window.localStorage.getItem(KEY)) || null; } catch (e) { return null; }
+      },
+      setUser: function (u) { $window.localStorage.setItem(KEY, JSON.stringify(u)); },
+      clearUser: function () { $window.localStorage.removeItem(KEY); },
+      isAdmin: function () {
+        var u = this.getUser();
+        return !!(u && u.is_admin);
       }
     };
   }])

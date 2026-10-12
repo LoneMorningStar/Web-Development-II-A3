@@ -9,62 +9,51 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body ng-app="charityApp" ng-controller="LoginController">
-  <header class="site-nav" id="site-nav">
-    <div class="site-nav__inner">
-      <a class="site-nav__logo" href="index.html">PingXiang Charity</a>
-      <button class="site-nav__pill" id="nav-toggle" type="button">Navigate</button>
-      <span class="site-nav__flower" id="nav-flower"></span>
-      <button class="site-nav__burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="overlay">
-        <span></span><span></span>
+<body ng-app="charityApp" ng-controller="LoginController" class="login-page">
+  <main class="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <button class="login-modal__backdrop" type="button" ng-click="close()" aria-label="Close log in"></button>
+
+    <div class="login-modal__card">
+      <button class="login-modal__close" type="button" ng-click="close()" aria-label="Close">
+        <ico name="x" size="20"></ico>
       </button>
+
+      <div class="login-modal__split">
+        <!-- Left: the little face that watches your cursor -->
+        <section class="login-modal__visual" aria-hidden="true">
+          <login-face state="faceState"></login-face>
+          <p class="login-modal__tagline">Nice to see you again.</p>
+        </section>
+
+        <!-- Right: the actual login form -->
+        <section class="login-modal__form">
+          <p class="eyebrow">Account</p>
+          <h1 class="login-modal__title" id="login-title">Welcome back</h1>
+          <p class="login-modal__sub">Log in to reserve your place at a charity event.</p>
+
+          <form name="loginForm" ng-submit="submit()" novalidate>
+            <div class="field">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" ng-model="form.email" required autocomplete="username">
+            </div>
+            <div class="field">
+              <label for="password">Password *</label>
+              <input type="password" id="password" name="password" ng-model="form.password" required
+                     ng-focus="onPasswordFocus()" ng-blur="onPasswordBlur()" autocomplete="current-password">
+            </div>
+
+            <p class="form-error" role="alert">{{ error }}</p>
+
+            <button type="submit" class="btn btn--solid login-modal__submit" ng-disabled="submitting || faceState === 'smile'">
+              {{ submitting ? 'Logging in...' : (faceState === 'smile' ? 'Welcome!' : 'Log in') }}
+            </button>
+          </form>
+
+          <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up</a></p>
+        </section>
+      </div>
     </div>
-  </header>
-
-  <div class="overlay" id="overlay" ng-controller="NavController">
-    <a href="index.html">Home</a>
-    <a href="search.html">Search Events</a>
-    <a href="login.html" ng-if="!isLoggedIn">Log in</a>
-    <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
-    <a href="#" ng-if="isLoggedIn" ng-click="logout()">Log out ({{ user.full_name }})</a>
-  </div>
-
-  <main class="detail-main">
-    <article class="detail-article reg-wrap">
-      <p class="eyebrow">Account</p>
-      <h1 class="detail-head__title">Log in</h1>
-
-      <form name="loginForm" ng-submit="submit()" novalidate class="reg-form" data-reveal>
-        <div class="field">
-          <label for="email">Email *</label>
-          <input type="email" id="email" name="email" ng-model="form.email" required>
-        </div>
-        <div class="field">
-          <label for="password">Password *</label>
-          <input type="password" id="password" name="password" ng-model="form.password" required>
-        </div>
-
-        <p class="form-error" role="alert">{{ error }}</p>
-
-        <button type="submit" class="btn btn--solid" ng-disabled="submitting">
-          {{ submitting ? 'Logging in...' : 'Log in' }}
-        </button>
-
-        <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up</a></p>
-      </form>
-    </article>
   </main>
-
-  <footer class="site-footer">
-    <div class="site-footer__inner">
-      <span class="site-footer__brand">PingXiang Charity</span>
-      <span class="site-footer__copy">&copy; 2026 PingXiang Charity</span>
-      <nav class="site-footer__links">
-        <a href="index.html">Home</a>
-        <a href="search.html">Search</a>
-      </nav>
-    </div>
-  </footer>
 
   <script src="js/angular.min.js"></script>
   <script src="js/nav.js"></script>

@@ -24,6 +24,7 @@
   <div class="overlay" id="overlay" ng-controller="NavController">
     <a href="index.html">Home</a>
     <a href="search.html">Search Events</a>
+    <a href="admin.html" ng-if="isAdmin">Admin</a>
     <a href="login.html" ng-if="!isLoggedIn">Log in</a>
     <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
     <a href="#" ng-if="isLoggedIn" ng-click="logout()">Log out ({{ user.full_name }})</a>

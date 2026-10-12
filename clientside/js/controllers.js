@@ -9,6 +9,21 @@ function eventIdFromLocation() {
   return query.get('id') || hash.get('id');
 }
 
+/* "2026-11-15 08:00:00"  ->  "2026-11-15T08:00" (datetime-local input) */
+function toLocalInput(dateStr) {
+  if (!dateStr) return '';
+  var parts = String(dateStr).split(' ');
+  var date = parts[0] || '';
+  var time = (parts[1] || '00:00:00').slice(0, 5);
+  return date + 'T' + time;
+}
+
+/* "2026-11-15T08:00"  ->  "2026-11-15 08:00:00" (MySQL DATETIME) */
+function toDbDateTime(localValue) {
+  if (!localValue) return '';
+  return String(localValue).replace('T', ' ') + ':00';
+}
+
 angular.module('charityApp')
 
   /* ---------- Home ---------- */
@@ -205,19 +220,35 @@ angular.module('charityApp')
   .controller('NavController', ['$scope', '$window', 'AuthService', function ($scope, $window, AuthService) {
     $scope.user = AuthService.getUser();
     $scope.isLoggedIn = !!$scope.user;
+    $scope.isAdmin = AuthService.isAdmin();
     $scope.logout = function () {
       AuthService.clearUser();
       $window.location.href = 'index.html';
     };
   }])
 
-  /* ---------- Login ---------- */
-  .controller('LoginController', ['$scope', '$window', 'ApiService', 'AuthService', function ($scope, $window, ApiService, AuthService) {
+  /* ---------- Login (modal) ---------- */
+  .controller('LoginController', ['$scope', '$window', '$timeout', 'ApiService', 'AuthService', function ($scope, $window, $timeout, ApiService, AuthService) {
     $scope.form = { email: '', password: '' };
     $scope.submitting = false;
     $scope.error = '';
+    $scope.faceState = 'idle';
+    $scope.passwordFocused = false;
 
     $scope.redirect = new URLSearchParams($window.location.hash.replace(/^#/, '')).get('redirect') || 'index.html';
+
+    $scope.onPasswordFocus = function () {
+      $scope.passwordFocused = true;
+      $scope.faceState = 'closed';
+    };
+    $scope.onPasswordBlur = function () {
+      $scope.passwordFocused = false;
+      if ($scope.faceState === 'closed') $scope.faceState = 'idle';
+    };
+
+    $scope.close = function () {
+      $window.location.href = 'index.html';
+    };
 
     $scope.submit = function () {
       $scope.error = '';
@@ -229,18 +260,28 @@ angular.module('charityApp')
       ApiService.login({ email: email, password: password })
         .then(function (user) {
           AuthService.setUser(user);
-          $window.location.href = $scope.redirect;
+          $scope.submitting = false;
+          $scope.faceState = 'smile';
+          $timeout(function () {
+            $window.location.href = $scope.redirect;
+          }, 1000);
         })
         .catch(function (err) {
           $scope.error = err.message;
           $scope.submitting = false;
+          $scope.faceState = 'shake';
+          $timeout(function () {
+            if ($scope.faceState === 'shake') {
+              $scope.faceState = $scope.passwordFocused ? 'closed' : 'idle';
+            }
+          }, 600);
         });
     };
   }])
 
   /* ---------- Sign up ---------- */
   .controller('SignupController', ['$scope', '$window', 'ApiService', 'AuthService', function ($scope, $window, ApiService, AuthService) {
-    $scope.form = { full_name: '', email: '', phone: '', password: '' };
+    $scope.form = { full_name: '', email: '', phone: '', password: '', confirm_password: '' };
     $scope.submitting = false;
     $scope.error = '';
 
@@ -249,11 +290,13 @@ angular.module('charityApp')
       var full_name = ($scope.form.full_name || '').trim();
       var email = ($scope.form.email || '').trim();
       var password = $scope.form.password || '';
+      var confirm = $scope.form.confirm_password || '';
       var phone = ($scope.form.phone || '').trim();
 
       if (!full_name) { $scope.error = 'Please enter your full name.'; return; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $scope.error = 'Please enter a valid email address.'; return; }
       if (password.length < 6) { $scope.error = 'Password must be at least 6 characters.'; return; }
+      if (confirm !== password) { $scope.error = 'Passwords do not match.'; return; }
 
       $scope.submitting = true;
       ApiService.register({ full_name: full_name, email: email, phone: phone || null, password: password })
@@ -265,5 +308,146 @@ angular.module('charityApp')
           $scope.error = err.message;
           $scope.submitting = false;
         });
+    };
+  }])
+
+  /* ---------- Admin: manage events (admin only) ---------- */
+  .controller('AdminController', ['$scope', '$window', 'ApiService', 'AuthService', function ($scope, $window, ApiService, AuthService) {
+    if (!AuthService.isAdmin()) { $window.location.href = 'index.html'; return; }
+    $scope.loading = true;
+    $scope.error = '';
+    $scope.success = '';
+    $scope.events = [];
+    $scope.deletingId = null;
+
+    ApiService.getEvents({ all: true })
+      .then(function (events) { $scope.events = events; })
+      .catch(function () { $scope.error = 'Could not load events.'; })
+      .finally(function () { $scope.loading = false; });
+
+    $scope.remove = function (event) {
+      if (!window.confirm('Delete "' + event.event_name + '"?')) return;
+      $scope.deletingId = event.event_id;
+      $scope.error = '';
+      $scope.success = '';
+
+      ApiService.deleteEvent(event.event_id)
+        .then(function () {
+          $scope.events = $scope.events.filter(function (e) { return e.event_id !== event.event_id; });
+          $scope.success = 'Event deleted.';
+        })
+        .catch(function (err) {
+          $scope.error = err.message;
+        })
+        .finally(function () { $scope.deletingId = null; });
+    };
+  }])
+
+  /* ---------- Admin: create / edit event (admin only) ---------- */
+  .controller('EventFormController', ['$scope', '$window', 'ApiService', 'AuthService', function ($scope, $window, ApiService, AuthService) {
+    if (!AuthService.isAdmin()) { $window.location.href = 'index.html'; return; }
+    $scope.categories = [];
+    $scope.organisations = [];
+    $scope.isEdit = false;
+    $scope.eventId = null;
+    $scope.saving = false;
+    $scope.loading = true;
+    $scope.error = '';
+    $scope.form = {
+      event_name: '', description: '', event_date: '', location: '',
+      ticket_price: 0, goal_amount: 0, raised_amount: 0, image_url: '',
+      is_suspended: false, org_id: '', category_id: ''
+    };
+    $scope.uploading = false;
+
+    $scope.pickImage = function () {
+      var input = document.getElementById('event-image');
+      if (input) input.click();
+    };
+
+    $scope.onFileChange = function (input) {
+      var file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      $scope.uploading = true;
+      $scope.error = '';
+      $scope.$apply();
+      ApiService.uploadImage(file)
+        .then(function (res) { $scope.form.image_url = res.url; })
+        .catch(function (err) { $scope.error = err.message; })
+        .finally(function () { $scope.uploading = false; });
+    };
+
+    ApiService.getCategories()
+      .then(function (cats) { $scope.categories = cats; })
+      .catch(function () {});
+
+    ApiService.getOrganisations()
+      .then(function (orgs) { $scope.organisations = orgs; })
+      .catch(function () {});
+
+    var id = eventIdFromLocation();
+    if (id && /^\d+$/.test(id)) {
+      $scope.isEdit = true;
+      $scope.eventId = id;
+      ApiService.getEvent(id)
+        .then(function (data) {
+          var e = data.event;
+          $scope.form = {
+            event_name: e.event_name,
+            description: e.description || '',
+            event_date: toLocalInput(e.event_date),
+            location: e.location,
+            ticket_price: Number(e.ticket_price) || 0,
+            goal_amount: Number(e.goal_amount) || 0,
+            raised_amount: Number(e.raised_amount) || 0,
+            image_url: e.image_url || '',
+            is_suspended: !!Number(e.is_suspended),
+            org_id: e.org_id,
+            category_id: e.category_id
+          };
+        })
+        .catch(function (err) { $scope.error = 'Could not load event: ' + err.message; })
+        .finally(function () { $scope.loading = false; });
+    } else {
+      $scope.loading = false;
+    }
+
+    $scope.submit = function () {
+      $scope.error = '';
+      var required = {
+        'event name': $scope.form.event_name,
+        'date': $scope.form.event_date,
+        'location': $scope.form.location,
+        'organisation': $scope.form.org_id,
+        'category': $scope.form.category_id
+      };
+      var missing = Object.keys(required).filter(function (k) { return !required[k]; });
+      if (missing.length > 0) {
+        $scope.error = 'Please fill in: ' + missing.join(', ') + '.';
+        return;
+      }
+
+      var payload = {
+        event_name: $scope.form.event_name,
+        description: $scope.form.description || null,
+        event_date: toDbDateTime($scope.form.event_date),
+        location: $scope.form.location,
+        ticket_price: $scope.form.ticket_price,
+        goal_amount: $scope.form.goal_amount,
+        raised_amount: $scope.form.raised_amount,
+        image_url: $scope.form.image_url || null,
+        is_suspended: !!$scope.form.is_suspended,
+        org_id: $scope.form.org_id,
+        category_id: $scope.form.category_id
+      };
+
+      $scope.saving = true;
+      var req = $scope.isEdit
+        ? ApiService.updateEvent($scope.eventId, payload)
+        : ApiService.createEvent(payload);
+
+      req.then(function () { $window.location.href = 'admin.html'; })
+        .catch(function (err) { $scope.error = err.message; $scope.saving = false; });
     };
   }]);

@@ -24,44 +24,62 @@
   <div class="overlay" id="overlay" ng-controller="NavController">
     <a href="index.html">Home</a>
     <a href="search.html">Search Events</a>
+    <a href="admin.html" ng-if="isAdmin">Admin</a>
     <a href="login.html" ng-if="!isLoggedIn">Log in</a>
     <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
     <a href="#" ng-if="isLoggedIn" ng-click="logout()">Log out ({{ user.full_name }})</a>
   </div>
 
-  <main class="detail-main">
-    <article class="detail-article reg-wrap">
-      <p class="eyebrow">Account</p>
-      <h1 class="detail-head__title">Create your account</h1>
+  <main class="detail-main auth-main">
+    <div class="auth-layout">
+      <article class="auth-form-panel">
+        <p class="eyebrow">Account</p>
+        <h1 class="detail-head__title">Create your account</h1>
 
-      <form name="signupForm" ng-submit="submit()" novalidate class="reg-form" data-reveal>
-        <div class="field">
-          <label for="full_name">Full name *</label>
-          <input type="text" id="full_name" name="full_name" ng-model="form.full_name" required>
-        </div>
-        <div class="field">
-          <label for="email">Email *</label>
-          <input type="email" id="email" name="email" ng-model="form.email" required>
-        </div>
-        <div class="field">
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" name="phone" ng-model="form.phone">
-        </div>
-        <div class="field">
-          <label for="password">Password *</label>
-          <input type="password" id="password" name="password" ng-model="form.password" minlength="6" required>
-          <small>At least 6 characters.</small>
-        </div>
+        <form name="signupForm" ng-submit="submit()" novalidate class="reg-form">
+          <div class="field">
+            <label for="full_name">Full name *</label>
+            <input type="text" id="full_name" name="full_name" ng-model="form.full_name" required>
+          </div>
+          <div class="field">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" ng-model="form.email" required>
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" ng-model="form.phone">
+          </div>
+          <div class="field">
+            <label for="password">Password *</label>
+            <input type="password" id="password" name="password" ng-model="form.password" minlength="6" required>
+            <small>At least 6 characters.</small>
+          </div>
+          <div class="field">
+            <label for="confirm_password">Confirm password *</label>
+            <input type="password" id="confirm_password" name="confirm_password" ng-model="form.confirm_password" required>
+            <small class="field-mismatch" ng-if="form.confirm_password && form.confirm_password !== form.password">Passwords don't match.</small>
+            <small class="field-match" ng-if="form.confirm_password && form.confirm_password === form.password">Passwords match.</small>
+          </div>
 
-        <p class="form-error" role="alert">{{ error }}</p>
+          <p class="form-error" role="alert">{{ error }}</p>
 
-        <button type="submit" class="btn btn--solid" ng-disabled="submitting">
-          {{ submitting ? 'Creating account...' : 'Sign up' }}
-        </button>
+          <button type="submit" class="btn btn--solid" ng-disabled="submitting">
+            {{ submitting ? 'Creating account...' : 'Sign up' }}
+          </button>
 
-        <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
-      </form>
-    </article>
+          <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+        </form>
+      </article>
+
+      <aside class="auth-visual" aria-hidden="true">
+        <span class="floaty floaty--1"></span>
+        <span class="floaty floaty--2"></span>
+        <span class="floaty floaty--3"></span>
+        <div class="auth-visual__flower"><ico name="flower" size="72"></ico></div>
+        <p class="auth-visual__title">Join us and make a difference.</p>
+        <p class="auth-visual__sub">One account, every charity event in Pingxiang.</p>
+      </aside>
+    </div>
   </main>
 
   <footer class="site-footer">

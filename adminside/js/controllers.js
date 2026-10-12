@@ -26,7 +26,8 @@ function adminEventIdFromLocation() {
 angular.module('adminApp')
 
   /* ---------- Dashboard / list ---------- */
-  .controller('ListController', ['$scope', 'ApiService', function ($scope, ApiService) {
+  .controller('ListController', ['$scope', '$window', 'ApiService', 'AdminAuth', function ($scope, $window, ApiService, AdminAuth) {
+    if (!AdminAuth.isAdmin()) { $window.location.href = 'login.html'; return; }
     $scope.loading = true;
     $scope.error = '';
     $scope.success = '';
@@ -61,7 +62,8 @@ angular.module('adminApp')
   }])
 
   /* ---------- Create ---------- */
-  .controller('CreateController', ['$scope', '$window', 'ApiService', function ($scope, $window, ApiService) {
+  .controller('CreateController', ['$scope', '$window', 'ApiService', 'AdminAuth', function ($scope, $window, ApiService, AdminAuth) {
+    if (!AdminAuth.isAdmin()) { $window.location.href = 'login.html'; return; }
     $scope.categories = [];
     $scope.organisations = [];
     $scope.form = {
@@ -121,7 +123,8 @@ angular.module('adminApp')
   }])
 
   /* ---------- Edit ---------- */
-  .controller('EditController', ['$scope', '$window', 'ApiService', function ($scope, $window, ApiService) {
+  .controller('EditController', ['$scope', '$window', 'ApiService', 'AdminAuth', function ($scope, $window, ApiService, AdminAuth) {
+    if (!AdminAuth.isAdmin()) { $window.location.href = 'login.html'; return; }
     $scope.categories = [];
     $scope.organisations = [];
     $scope.form = {
@@ -218,5 +221,45 @@ angular.module('adminApp')
           $scope.error = err.message;
           $scope.saving = false;
         });
+    };
+  }])
+
+  /* ---------- Admin login ---------- */
+  .controller('AdminLoginController', ['$scope', '$window', 'ApiService', 'AdminAuth', function ($scope, $window, ApiService, AdminAuth) {
+    if (AdminAuth.isAdmin()) { $window.location.href = 'index.html'; return; }
+    $scope.form = { email: '', password: '' };
+    $scope.submitting = false;
+    $scope.error = '';
+
+    $scope.submit = function () {
+      $scope.error = '';
+      var email = ($scope.form.email || '').trim();
+      var password = $scope.form.password || '';
+      if (!email || !password) { $scope.error = 'Please enter your email and password.'; return; }
+
+      $scope.submitting = true;
+      ApiService.login({ email: email, password: password })
+        .then(function (user) {
+          if (!user.is_admin) {
+            $scope.error = 'This account is not an administrator.';
+            $scope.submitting = false;
+            return;
+          }
+          AdminAuth.setUser(user);
+          $window.location.href = 'index.html';
+        })
+        .catch(function (err) {
+          $scope.error = err.message;
+          $scope.submitting = false;
+        });
+    };
+  }])
+
+  /* ---------- Admin nav / logout ---------- */
+  .controller('AdminNavController', ['$scope', '$window', 'AdminAuth', function ($scope, $window, AdminAuth) {
+    $scope.admin = AdminAuth.getUser();
+    $scope.logout = function () {
+      AdminAuth.clearUser();
+      $window.location.href = 'login.html';
     };
   }]);
