@@ -18,7 +18,9 @@ function toDbDateTime(localValue) {
 }
 
 function adminEventIdFromLocation() {
-  return new URLSearchParams(window.location.search).get('id');
+  var query = new URLSearchParams(window.location.search);
+  var hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  return query.get('id') || hash.get('id');
 }
 
 angular.module('adminApp')

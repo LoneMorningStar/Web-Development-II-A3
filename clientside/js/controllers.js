@@ -148,7 +148,7 @@ angular.module('charityApp')
 
     var user = AuthService.getUser();
     if (!user) {
-      $window.location.href = 'login.html?redirect=' + encodeURIComponent('register.html?id=' + (id || ''));
+      $window.location.href = 'login.html#redirect=' + encodeURIComponent('register.html#id=' + (id || ''));
       return;
     }
     $scope.user = user;
@@ -217,7 +217,7 @@ angular.module('charityApp')
     $scope.submitting = false;
     $scope.error = '';
 
-    $scope.redirect = new URLSearchParams($window.location.search).get('redirect') || 'index.html';
+    $scope.redirect = new URLSearchParams($window.location.hash.replace(/^#/, '')).get('redirect') || 'index.html';
 
     $scope.submit = function () {
       $scope.error = '';

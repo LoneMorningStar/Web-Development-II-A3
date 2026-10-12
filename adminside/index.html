@@ -60,7 +60,7 @@
             <td>{{ event.registration_count }}</td>
             <td>
               <div class="row-actions">
-                <a class="btn btn--outline btn--sm" ng-href="edit.html?id={{ event.event_id }}"><ico name="edit" size="14"></ico> Edit</a>
+                <a class="btn btn--outline btn--sm" ng-href="edit.html#id={{ event.event_id }}"><ico name="edit" size="14"></ico> Edit</a>
                 <button class="btn btn--danger btn--sm" type="button" ng-click="remove(event)" ng-disabled="deletingId === event.event_id">
                   <ico name="trash" size="14"></ico> {{ deletingId === event.event_id ? 'Deleting...' : 'Delete' }}
                 </button>
