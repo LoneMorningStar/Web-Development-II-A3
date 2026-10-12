@@ -854,6 +854,99 @@ img { display: block; max-width: 100%; }
   .detail-head__title { font-size: 3.75rem; }
 }
 
+/* ---------- Registration list (event detail) ---------- */
+.reg-list { border-top: 1px solid var(--line); margin-top: 1.25rem; }
+.reg-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.reg-item__name {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 1.125rem;
+  color: var(--ink);
+  margin: 0;
+}
+.reg-item__email { color: var(--ink-50); font-size: 0.875rem; margin: 0.25rem 0 0; }
+.reg-item__meta { text-align: right; flex: none; }
+.reg-item__tickets { color: var(--ink); font-size: 0.875rem; font-weight: 500; margin: 0; }
+.reg-item__date { color: var(--ink-40); font-size: 0.75rem; margin: 0.25rem 0 0; }
+
+/* ---------- Registration page ---------- */
+.reg-wrap { max-width: 48rem; }
+.reg-summary {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin: 2rem 0 2.5rem;
+}
+.reg-summary__label {
+  color: var(--ink-40);
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+}
+.reg-summary__name {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0;
+}
+.reg-summary .detail-head__meta { margin-top: 1.25rem; }
+.reg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin-top: 1rem;
+}
+.field small {
+  display: block;
+  color: var(--ink-40);
+  font-size: 0.75rem;
+  margin-top: 0.4rem;
+}
+.auth-switch {
+  color: var(--ink-50);
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+}
+.auth-switch a { color: var(--accent); }
+.reg-success {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+.reg-success__title {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 1.75rem;
+  color: var(--ink);
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.reg-success__title .icon { color: var(--accent); }
+.reg-success__body { color: var(--ink-60); font-size: 1rem; margin: 0 0 0.5rem; }
+.reg-success .form-actions { justify-content: center; margin-top: 1.5rem; }
+
+@media (min-width: 768px) {
+  .reg-item__name { font-size: 1.25rem; }
+  .reg-summary { padding: 2rem; }
+  .reg-success { padding: 2.5rem; }
+  .reg-success__title { font-size: 2rem; }
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

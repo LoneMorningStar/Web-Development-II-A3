@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PingXiang Charity — Register</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body ng-app="charityApp" ng-controller="RegisterController">
+  <header class="site-nav" id="site-nav">
+    <div class="site-nav__inner">
+      <a class="site-nav__logo" href="index.html">PingXiang Charity</a>
+      <button class="site-nav__pill" id="nav-toggle" type="button">Navigate</button>
+      <span class="site-nav__flower" id="nav-flower"></span>
+      <button class="site-nav__burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="overlay">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="overlay" id="overlay" ng-controller="NavController">
+    <a href="index.html">Home</a>
+    <a href="search.html">Search Events</a>
+    <a href="login.html" ng-if="!isLoggedIn">Log in</a>
+    <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
+    <a href="#" ng-if="isLoggedIn" ng-click="logout()">Log out ({{ user.full_name }})</a>
+  </div>
+
+  <main class="detail-main">
+    <article class="detail-article reg-wrap">
+
+      <a class="back-link" ng-href="event.html#id={{ eventId }}"><ico name="arrowLeft" size="16"></ico> Back to event</a>
+
+      <p class="eyebrow">Registration</p>
+      <h1 class="detail-head__title">Reserve your place</h1>
+
+      <!-- event summary -->
+      <div class="reg-summary" ng-if="event" data-reveal>
+        <div class="reg-summary__row">
+          <div>
+            <p class="reg-summary__label">Event</p>
+            <p class="reg-summary__name">{{ event.event_name }}</p>
+          </div>
+        </div>
+        <ul class="detail-head__meta">
+          <li><ico name="calendar" size="16"></ico><span>{{ event.event_date | date:'MMM d, yyyy h:mm a' }}</span></li>
+          <li><ico name="mapPin" size="16"></ico><span>{{ event.location }}</span></li>
+          <li><ico name="ticket" size="16"></ico><span>{{ priceText(event) }}</span></li>
+        </ul>
+      </div>
+
+      <div class="message" ng-if="!loading && !event && !loadError">Loading event...</div>
+      <p class="error-block" ng-if="loadError">{{ loadError }}</p>
+
+      <!-- registration form -->
+      <form name="regForm" ng-submit="submit()" novalidate class="reg-form" ng-if="event && !success" data-reveal>
+        <p class="contact-line">Signed in as <strong>{{ user.full_name }}</strong> ({{ user.email }})</p>
+
+        <div class="field">
+          <label for="tickets">Number of tickets *</label>
+          <input type="number" id="tickets" name="tickets" ng-model="form.tickets" min="1" required>
+        </div>
+
+        <p class="form-error" role="alert">{{ error }}</p>
+
+        <button type="submit" class="btn btn--solid" ng-disabled="submitting">
+          {{ submitting ? 'Submitting...' : 'Confirm registration' }}
+        </button>
+      </form>
+
+      <!-- success -->
+      <div class="reg-success" ng-if="success" data-reveal>
+        <p class="reg-success__title"><ico name="check" size="28"></ico> Thank you.</p>
+        <p class="reg-success__body">Your registration has been confirmed. We look forward to seeing you there.</p>
+        <div class="form-actions">
+          <a class="btn btn--outline" ng-href="event.html#id={{ eventId }}">Back to event</a>
+          <a class="btn btn--solid" href="index.html">Go home</a>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <span class="site-footer__brand">PingXiang Charity</span>
+      <span class="site-footer__copy">&copy; 2026 PingXiang Charity</span>
+      <nav class="site-footer__links">
+        <a href="index.html">Home</a>
+        <a href="search.html">Search</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/angular.min.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/controllers.js"></script>
+</body>
+</html>

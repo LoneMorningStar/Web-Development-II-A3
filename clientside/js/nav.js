@@ -18,7 +18,12 @@ window.ICO = {
   target: function (s) { s = s || 16; return svg('<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>', s); },
   search: function (s) { s = s || 16; return svg('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>', s); },
   x: function (s) { s = s || 16; return svg('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', s); },
-  chevronDown: function (s) { s = s || 16; return svg('<path d="m6 9 6 6 6-6"/>', s); }
+  chevronDown: function (s) { s = s || 16; return svg('<path d="m6 9 6 6 6-6"/>', s); },
+  plus: function (s) { s = s || 16; return svg('<path d="M12 5v14"/><path d="M5 12h14"/>', s); },
+  edit: function (s) { s = s || 16; return svg('<path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>', s); },
+  trash: function (s) { s = s || 16; return svg('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>', s); },
+  user: function (s) { s = s || 16; return svg('<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>', s); },
+  check: function (s) { s = s || 16; return svg('<path d="M20 6 9 17l-5-5"/>', s); }
 };
 
 /* ---------- Escape helper ---------- */
@@ -31,30 +36,26 @@ window.esc = function (s) {
     .replace(/'/g, '&#39;');
 };
 
-/* ---------- Navbar entrance + scroll state ---------- */
+/* ---------- Navbar entrance + scroll state + overlay menu ---------- */
 (function () {
   var nav = document.querySelector('.site-nav');
   var burger = document.getElementById('burger');
   var overlay = document.getElementById('overlay');
   var pill = document.getElementById('nav-toggle');
 
-  // Inject the Flower2 icon into the navbar
   var flower = document.getElementById('nav-flower');
   if (flower) flower.innerHTML = window.ICO.flower(28);
 
-  // Entrance (mounted after 100ms)
   setTimeout(function () {
     document.documentElement.classList.add('mounted');
   }, 100);
 
-  // Scroll state
   function onScroll() {
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // Overlay open/close
   function setMenu(open) {
     if (overlay) overlay.classList.toggle('is-open', open);
     if (burger) {
@@ -87,23 +88,4 @@ window.esc = function (s) {
   window.addEventListener('resize', function () {
     if (overlay && overlay.classList.contains('is-open') && window.innerWidth >= 768) setMenu(false);
   });
-})();
-
-/* ---------- Scroll-triggered reveal ---------- */
-(function () {
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-  window.observeReveals = function (root) {
-    var els = (root || document).querySelectorAll('[data-reveal]:not(.in-view)');
-    els.forEach(function (el) { observer.observe(el); });
-  };
-
-  observeReveals(document);
 })();

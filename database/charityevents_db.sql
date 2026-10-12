@@ -39,6 +39,28 @@ CREATE TABLE events (
 );
 
 
+CREATE TABLE users (
+  user_id       INT AUTO_INCREMENT PRIMARY KEY,
+  email         VARCHAR(150) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  full_name     VARCHAR(150) NOT NULL,
+  phone         VARCHAR(40),
+  created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE registrations (
+  registration_id   INT AUTO_INCREMENT PRIMARY KEY,
+  user_id           INT NOT NULL,
+  event_id          INT NOT NULL,
+  tickets           INT NOT NULL DEFAULT 1,
+  registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_registrations_user  FOREIGN KEY (user_id)  REFERENCES users(user_id),
+  CONSTRAINT fk_registrations_event FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE RESTRICT,
+  CONSTRAINT uq_registrations_user_event UNIQUE (user_id, event_id)
+);
+
+
 INSERT INTO categories (category_name, description) VALUES
 ('Fun Run',        'Community running/walking fundraiser'),
 ('Gala Dinner',    'Formal dinner and auction evening'),
@@ -94,3 +116,6 @@ INSERT INTO events
 ('Luxi Silent Auction for Education',
  'A silent auction of artwork and crafts to fund scholarships for rural students.',
  '2026-11-20 10:00:00', 'Luxi County, Pingxiang City, Jiangxi Province', 0.00, 25000.00,  8100.00, 'images/auction.svg',  0, 1, 3);
+
+
+

@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body ng-app="charityApp" ng-controller="SearchController">
   <header class="site-nav" id="site-nav">
     <div class="site-nav__inner">
       <a class="site-nav__logo" href="index.html">PingXiang Charity</a>
@@ -21,9 +21,12 @@
     </div>
   </header>
 
-  <div class="overlay" id="overlay">
+  <div class="overlay" id="overlay" ng-controller="NavController">
     <a href="index.html">Home</a>
     <a href="search.html">Search Events</a>
+    <a href="login.html" ng-if="!isLoggedIn">Log in</a>
+    <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
+    <a href="#" ng-if="isLoggedIn" ng-click="logout()">Log out ({{ user.full_name }})</a>
   </div>
 
   <section class="page-hero">
@@ -35,38 +38,70 @@
   </section>
 
   <section class="search-section">
-    <form id="search-form" class="search-form" novalidate>
+    <form id="search-form" class="search-form" ng-submit="search()" novalidate>
       <div class="search-form__grid">
         <div class="field">
           <label for="date">Date</label>
-          <input type="date" id="date">
+          <input type="date" id="date" ng-model="filters.date">
         </div>
         <div class="field">
           <label for="location">Location</label>
-          <input type="text" id="location" placeholder="e.g. Melbourne">
+          <input type="text" id="location" ng-model="filters.location" placeholder="e.g. Melbourne">
         </div>
         <div class="field">
           <label for="category">Category</label>
-          <select id="category">
+          <select id="category" ng-model="filters.category"
+                  ng-options="c.category_id as c.category_name for c in categories">
             <option value="">All categories</option>
           </select>
-          <span class="field__chevron" id="category-chevron"></span>
+          <span class="field__chevron"><ico name="chevronDown" size="16"></ico></span>
         </div>
       </div>
       <div class="form-actions">
         <button type="submit" class="btn btn--solid" id="search-btn">Search</button>
-        <button type="button" id="clear-btn" class="btn btn--outline">Clear filters</button>
+        <button type="button" id="clear-btn" class="btn btn--outline" ng-click="clear()">Clear filters</button>
       </div>
-      <p id="error" class="form-error" role="alert"></p>
+      <p id="error" class="form-error" role="alert">{{ error }}</p>
     </form>
   </section>
 
   <section class="results">
     <div class="results-head">
       <p class="eyebrow">Results</p>
-      <h2 class="display" id="results-title">Matching events</h2>
+      <h2 class="display" id="results-title">{{ searched && !loading ? (results.length === 1 ? results.length + ' event found' : results.length + ' events found') : 'Matching events' }}</h2>
     </div>
-    <div id="results" class="grid" aria-live="polite"></div>
+
+    <div id="results" class="grid" aria-live="polite">
+      <div class="skeleton" ng-repeat="i in [1,2,3]" ng-if="loading">
+        <div class="skeleton__media"></div>
+        <div class="skeleton__line"></div>
+        <div class="skeleton__line skeleton__line--short"></div>
+      </div>
+
+      <a class="card" ng-repeat="event in results"
+         ng-href="event.html#id={{ event.event_id }}" data-reveal
+         ng-style="{'transition-delay': ($index * 80) + 'ms'}">
+        <div class="card__media">
+          <img ng-if="event.image_url" ng-src="{{ event.image_url }}" alt="{{ event.event_name }}" loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.svg';">
+          <span class="card__media--empty" ng-if="!event.image_url"><ico name="flower" size="32"></ico></span>
+          <span class="card__tag">{{ event.category_name }}</span>
+        </div>
+        <div class="card__body">
+          <h3 class="card__name">{{ event.event_name }}</h3>
+          <div class="card__meta">
+            <span><ico name="calendar" size="14"></ico>{{ event.event_date | date:'MMM d, yyyy' }}</span>
+            <span><ico name="mapPin" size="14"></ico>{{ event.location }}</span>
+          </div>
+          <div class="card__foot">
+            <span class="card__status">{{ event.status | statusLabel }}</span>
+            <span class="card__arrow"><ico name="arrowRight" size="16"></ico></span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <p class="results-hint" ng-if="!searched && !loading">Use the form above to search for events.</p>
+    <p class="results-empty" ng-if="searched && !loading && results.length === 0">No matching events. Try adjusting your filters.</p>
   </section>
 
   <footer class="site-footer">
@@ -80,11 +115,9 @@
     </div>
   </footer>
 
-  <script src="js/api.js"></script>
+  <script src="js/angular.min.js"></script>
   <script src="js/nav.js"></script>
-  <script src="js/search.js"></script>
-  <script>
-    document.getElementById('category-chevron').innerHTML = window.ICO.chevronDown(16);
-  </script>
+  <script src="js/app.js"></script>
+  <script src="js/controllers.js"></script>
 </body>
 </html>
