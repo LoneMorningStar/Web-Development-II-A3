@@ -326,6 +326,20 @@ img { display: block; max-width: 100%; }
   color: var(--ink-18);
 }
 
+/* ---------- Ivy divider (hero -> mission) ---------- */
+.mission-drips {
+  position: relative;
+  z-index: 5;
+  margin-top: -2px;
+  line-height: 0;
+  pointer-events: none;
+}
+.mission-drips svg {
+  display: block;
+  width: 100%;
+  height: clamp(90px, 12vw, 170px);
+}
+
 /* ---------- Events grid ---------- */
 .events-head {
   display: flex;
