@@ -21,13 +21,28 @@ function toLocalInput(dateStr) {
 /* "2026-11-15T08:00"  ->  "2026-11-15 08:00:00" (MySQL DATETIME) */
 function toDbDateTime(localValue) {
   if (!localValue) return '';
+  if (localValue instanceof Date) {
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return localValue.getFullYear() + '-' + p(localValue.getMonth() + 1) + '-' + p(localValue.getDate()) +
+      ' ' + p(localValue.getHours()) + ':' + p(localValue.getMinutes()) + ':00';
+  }
   return String(localValue).replace('T', ' ') + ':00';
+}
+
+/* Normalise an <input type="date"> value (AngularJS returns a Date object) to "YYYY-MM-DD" */
+function toDateString(value) {
+  if (!value) return '';
+  if (value instanceof Date) {
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return value.getFullYear() + '-' + p(value.getMonth() + 1) + '-' + p(value.getDate());
+  }
+  return String(value).slice(0, 10);
 }
 
 angular.module('charityApp')
 
   /* ---------- Home ---------- */
-  .controller('HomeController', ['$scope', 'ApiService', function ($scope, ApiService) {
+  .controller('HomeController', ['$scope', '$window', 'ApiService', function ($scope, $window, ApiService) {
     $scope.loading = true;
     $scope.error = '';
     $scope.events = [];
@@ -46,6 +61,12 @@ angular.module('charityApp')
           $scope.loading = false;
         });
     }
+
+    // Refresh when the browser restores this page from the back/forward cache,
+    // so admin add/delete changes are reflected without a hard reload.
+    $window.addEventListener('pageshow', function (e) {
+      if (e.persisted) { load(); }
+    });
 
     $scope.retry = load;
     load();
@@ -73,7 +94,7 @@ angular.module('charityApp')
     $scope.search = function () {
       $scope.error = '';
 
-      var date = $scope.filters.date;
+      var date = toDateString($scope.filters.date);
       var location = ($scope.filters.location || '').trim();
       var category = $scope.filters.category;
 

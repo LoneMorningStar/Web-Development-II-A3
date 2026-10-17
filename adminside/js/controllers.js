@@ -14,6 +14,11 @@ function toLocalInput(dateStr) {
 /* "2026-11-15T08:00"  ->  "2026-11-15 08:00:00" (MySQL DATETIME) */
 function toDbDateTime(localValue) {
   if (!localValue) return '';
+  if (localValue instanceof Date) {
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return localValue.getFullYear() + '-' + p(localValue.getMonth() + 1) + '-' + p(localValue.getDate()) +
+      ' ' + p(localValue.getHours()) + ':' + p(localValue.getMinutes()) + ':00';
+  }
   return String(localValue).replace('T', ' ') + ':00';
 }
 
