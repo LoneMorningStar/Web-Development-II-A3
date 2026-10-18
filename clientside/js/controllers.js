@@ -62,10 +62,23 @@ angular.module('charityApp')
         });
     }
 
-    // Refresh when the browser restores this page from the back/forward cache,
-    // so admin add/delete changes are reflected without a hard reload.
+    // Refresh whenever the user returns to this page — bfcache restore,
+    // tab switch, or window focus — so admin add/delete changes always show.
     $window.addEventListener('pageshow', function (e) {
       if (e.persisted) { load(); }
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) { load(); }
+    });
+    $window.addEventListener('focus', load);
+
+    // Safety net: poll on a timer so the home list always catches up with
+    // admin add/edit/delete, even if the focus/visibility events never fire
+    // (e.g. the home page stays open in another tab while editing in admin).
+    var REFRESH_MS = 30000;
+    var timer = $window.setInterval(load, REFRESH_MS);
+    $scope.$on('$destroy', function () {
+      $window.clearInterval(timer);
     });
 
     $scope.retry = load;
@@ -471,4 +484,133 @@ angular.module('charityApp')
       req.then(function () { $window.location.href = 'admin.html'; })
         .catch(function (err) { $scope.error = err.message; $scope.saving = false; });
     };
+  }])
+
+  /* ---------- Events: all events + search (replaces the old search page) ---------- */
+  .controller('EventsController', ['$scope', 'ApiService', function ($scope, ApiService) {
+    $scope.categories = [];
+    $scope.filters = { date: '', location: '', category: '' };
+    $scope.events = [];
+    $scope.loading = true;
+    $scope.error = '';
+    $scope.searched = false;
+
+    ApiService.getCategories()
+      .then(function (cats) { $scope.categories = cats; })
+      .catch(function () { $scope.error = 'Failed to load categories.'; });
+
+    function isPastDate(dateStr) {
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return new Date(dateStr + 'T00:00:00') < today;
+    }
+
+    function loadAll() {
+      $scope.loading = true;
+      $scope.error = '';
+      $scope.searched = false;
+      ApiService.searchEvents({})
+        .then(function (events) { $scope.events = events; })
+        .catch(function (err) { $scope.error = 'Failed to load events: ' + err.message; })
+        .finally(function () { $scope.loading = false; });
+    }
+
+    $scope.search = function () {
+      $scope.error = '';
+
+      var date = toDateString($scope.filters.date);
+      var location = ($scope.filters.location || '').trim();
+      var category = $scope.filters.category;
+
+      if (date && isPastDate(date)) {
+        $scope.error = 'Please pick today or a future date.';
+        return;
+      }
+
+      var params = {};
+      if (date) params.date = date;
+      if (location) params.location = location;
+      if (category) params.category = category;
+
+      $scope.loading = true;
+      $scope.searched = true;
+      ApiService.searchEvents(params)
+        .then(function (events) { $scope.events = events; })
+        .catch(function (err) { $scope.error = 'Search failed: ' + err.message; })
+        .finally(function () { $scope.loading = false; });
+    };
+
+    $scope.clear = function () {
+      $scope.filters = { date: '', location: '', category: '' };
+      loadAll();
+    };
+
+    loadAll();
+  }])
+
+  /* ---------- Profile: user info + their registrations ---------- */
+  .controller('ProfileController', ['$scope', '$window', 'ApiService', 'AuthService', function ($scope, $window, ApiService, AuthService) {
+    var user = AuthService.getUser();
+    if (!user) {
+      $window.location.href = 'login.html#redirect=' + encodeURIComponent('profile.html');
+      return;
+    }
+    $scope.user = user;
+    $scope.loading = true;
+    $scope.error = '';
+    $scope.success = '';
+    $scope.saving = false;
+    $scope.registrations = [];
+    $scope.form = { full_name: user.full_name || '', phone: user.phone || '' };
+    $scope.password = { new_password: '', confirm_password: '' };
+
+    function load() {
+      $scope.loading = true;
+      $scope.error = '';
+      ApiService.getProfile(user.user_id)
+        .then(function (data) {
+          $scope.form.full_name = data.user.full_name;
+          $scope.form.phone = data.user.phone || '';
+          $scope.registrations = data.registrations;
+        })
+        .catch(function (err) {
+          $scope.error = 'Could not load your profile: ' + err.message;
+        })
+        .finally(function () { $scope.loading = false; });
+    }
+
+    $scope.save = function () {
+      $scope.error = '';
+      $scope.success = '';
+
+      var full_name = ($scope.form.full_name || '').trim();
+      if (!full_name) { $scope.error = 'Please enter your full name.'; return; }
+
+      var newPass = $scope.password.new_password || '';
+      var confirm = $scope.password.confirm_password || '';
+      if (newPass || confirm) {
+        if (newPass.length < 6) { $scope.error = 'New password must be at least 6 characters.'; return; }
+        if (newPass !== confirm) { $scope.error = 'New passwords do not match.'; return; }
+      }
+
+      var body = { full_name: full_name, phone: ($scope.form.phone || '').trim() || null };
+      if (newPass) body.password = newPass;
+
+      $scope.saving = true;
+      ApiService.updateProfile(user.user_id, body)
+        .then(function (updated) {
+          $scope.success = 'Profile updated.';
+          $scope.saving = false;
+          user.full_name = updated.full_name;
+          user.phone = updated.phone;
+          AuthService.setUser(user);
+          $scope.password = { new_password: '', confirm_password: '' };
+        })
+        .catch(function (err) {
+          $scope.error = err.message;
+          $scope.saving = false;
+        });
+    };
+
+    load();
   }]);

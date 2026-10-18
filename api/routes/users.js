@@ -80,4 +80,82 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// GET /api/users/:id -> user profile (no password hash) + their registrations.
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid user id' });
+    }
+
+    const [users] = await db.query(
+      'SELECT user_id, email, full_name, phone, is_admin, created_at FROM users WHERE user_id = ?',
+      [id]
+    );
+    if (users.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const [regs] = await db.query(`
+      SELECT r.registration_id, r.tickets, r.registration_date,
+             e.event_id, e.event_name, e.event_date, e.location, e.image_url,
+             c.category_name
+      FROM registrations r
+      JOIN events e ON r.event_id = e.event_id
+      JOIN categories c ON e.category_id = c.category_id
+      WHERE r.user_id = ?
+      ORDER BY r.registration_date DESC
+    `, [id]);
+
+    res.json({ success: true, data: { user: users[0], registrations: regs } });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/users/:id -> update profile (full_name, phone, optional new password).
+// Email is intentionally immutable (the login key).
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid user id' });
+    }
+
+    const [users] = await db.query('SELECT user_id FROM users WHERE user_id = ?', [id]);
+    if (users.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const { full_name, phone, password } = req.body;
+    if (!full_name || !String(full_name).trim()) {
+      return res.status(400).json({ success: false, message: 'Full name is required' });
+    }
+
+    const updates = ['full_name = ?', 'phone = ?'];
+    const params = [String(full_name).trim(), phone ? String(phone).trim() : null];
+
+    if (password) {
+      if (String(password).length < 6) {
+        return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+      }
+      const hash = await bcrypt.hash(password, 10);
+      updates.push('password_hash = ?');
+      params.push(hash);
+    }
+
+    params.push(id);
+    await db.query(`UPDATE users SET ${updates.join(', ')} WHERE user_id = ?`, params);
+
+    const [updated] = await db.query(
+      'SELECT user_id, email, full_name, phone, is_admin, created_at FROM users WHERE user_id = ?',
+      [id]
+    );
+
+    res.json({ success: true, data: updated[0], message: 'Profile updated' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

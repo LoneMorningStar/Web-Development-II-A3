@@ -23,7 +23,8 @@
 
   <div class="overlay" id="overlay" ng-controller="NavController">
     <a href="index.html">Home</a>
-    <a href="search.html">Search Events</a>
+    <a href="events.html">Events</a>
+    <a href="profile.html" ng-if="isLoggedIn">My Profile</a>
     <a href="admin.html" ng-if="isAdmin">Admin</a>
     <a href="login.html" ng-if="!isLoggedIn">Log in</a>
     <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
@@ -210,7 +211,7 @@
         <p class="eyebrow">Upcoming</p>
         <h2 class="display display--lg">Charity events</h2>
       </div>
-      <a class="events-head__link" href="search.html">View all &rarr;</a>
+      <a class="events-head__link" href="events.html">View all &rarr;</a>
     </div>
 
     <div id="event-list" class="grid" aria-live="polite">
@@ -253,7 +254,7 @@
     <div class="cta-strip__inner">
       <p class="eyebrow">Get involved</p>
       <p class="quote">Find an event. Bring a friend. Change something.</p>
-      <a class="btn btn--solid" href="search.html">Search events</a>
+      <a class="btn btn--solid" href="events.html">Browse events</a>
     </div>
   </section>
 
@@ -263,7 +264,7 @@
       <span class="site-footer__copy">&copy; 2026 PingXiang Charity</span>
       <nav class="site-footer__links">
         <a href="index.html">Home</a>
-        <a href="search.html">Search</a>
+        <a href="events.html">Events</a>
       </nav>
     </div>
   </footer>

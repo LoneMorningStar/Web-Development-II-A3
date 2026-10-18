@@ -1211,6 +1211,11 @@ img { display: block; max-width: 100%; }
 
 /* ---------- Registration page ---------- */
 .reg-wrap { max-width: 48rem; }
+.profile-events {
+  max-width: var(--max-w);
+  margin: 3rem auto 0;
+  padding: 0 var(--pad-x);
+}
 .event-form-wrap { max-width: 64rem; }
 .reg-summary {
   border: 1px solid var(--line);

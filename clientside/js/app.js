@@ -14,6 +14,15 @@ angular.module('charityApp', [])
   /* ---------- RESTful API service ---------- */
   .factory('ApiService', ['$http', 'API_BASE', 'AuthService', function ($http, API_BASE, AuthService) {
     function call(config) {
+      // Disable the browser HTTP cache for every GET so the home page and
+      // events page always reflect the latest admin add/edit/delete changes.
+      if (!config.method || config.method.toUpperCase() === 'GET') {
+        config.cache = false;
+        // Hard cache-buster: make every GET URL unique so the browser can
+        // never serve a stale response, regardless of Cache-Control headers.
+        config.params = config.params || {};
+        config.params._ts = Date.now();
+      }
       return $http(config).then(
         function (res) { return res.data.data; },
         function (res) {
@@ -78,6 +87,12 @@ angular.module('charityApp', [])
       },
       login: function (body) {
         return call({ method: 'POST', url: API_BASE + '/users/login', data: body });
+      },
+      getProfile: function (id) {
+        return call({ method: 'GET', url: API_BASE + '/users/' + id });
+      },
+      updateProfile: function (id, body) {
+        return call({ method: 'PUT', url: API_BASE + '/users/' + id, data: body });
       }
     };
   }])

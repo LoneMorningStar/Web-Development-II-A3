@@ -23,7 +23,8 @@
 
   <div class="overlay" id="overlay" ng-controller="NavController">
     <a href="index.html">Home</a>
-    <a href="search.html">Search Events</a>
+    <a href="events.html">Events</a>
+    <a href="profile.html" ng-if="isLoggedIn">My Profile</a>
     <a href="admin.html" ng-if="isAdmin">Admin</a>
     <a href="login.html" ng-if="!isLoggedIn">Log in</a>
     <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
@@ -91,7 +92,7 @@
       <span class="site-footer__copy">&copy; 2026 PingXiang Charity</span>
       <nav class="site-footer__links">
         <a href="index.html">Home</a>
-        <a href="search.html">Search</a>
+        <a href="events.html">Events</a>
       </nav>
     </div>
   </footer>

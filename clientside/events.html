@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PingXiang Charity — Search Events</title>
+  <title>PingXiang Charity — All Events</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body ng-app="charityApp" ng-controller="SearchController">
+<body ng-app="charityApp" ng-controller="EventsController">
   <header class="site-nav" id="site-nav">
     <div class="site-nav__inner">
       <a class="site-nav__logo" href="index.html">PingXiang Charity</a>
@@ -23,7 +23,8 @@
 
   <div class="overlay" id="overlay" ng-controller="NavController">
     <a href="index.html">Home</a>
-    <a href="search.html">Search Events</a>
+    <a href="events.html">Events</a>
+    <a href="profile.html" ng-if="isLoggedIn">My Profile</a>
     <a href="admin.html" ng-if="isAdmin">Admin</a>
     <a href="login.html" ng-if="!isLoggedIn">Log in</a>
     <a href="signup.html" ng-if="!isLoggedIn">Sign up</a>
@@ -32,9 +33,9 @@
 
   <section class="page-hero">
     <div class="container">
-      <p class="eyebrow">Find your cause</p>
-      <h1 class="display page-hero__title">Search charity<br class="hero__br"> events</h1>
-      <p class="page-hero__sub">Filter by date, location, or category.</p>
+      <p class="eyebrow">Browse all events</p>
+      <h1 class="display page-hero__title">Charity<br class="hero__br"> events</h1>
+      <p class="page-hero__sub">Browse every event, or filter by date, location, or category.</p>
     </div>
   </section>
 
@@ -60,7 +61,7 @@
       </div>
       <div class="form-actions">
         <button type="submit" class="btn btn--solid" id="search-btn">Search</button>
-        <button type="button" id="clear-btn" class="btn btn--outline" ng-click="clear()">Clear filters</button>
+        <button type="button" id="clear-btn" class="btn btn--outline" ng-click="clear()">Show all</button>
       </div>
       <p id="error" class="form-error" role="alert">{{ error }}</p>
     </form>
@@ -68,8 +69,8 @@
 
   <section class="results">
     <div class="results-head">
-      <p class="eyebrow">Results</p>
-      <h2 class="display" id="results-title">{{ searched && !loading ? (results.length === 1 ? results.length + ' event found' : results.length + ' events found') : 'Matching events' }}</h2>
+      <p class="eyebrow">Events</p>
+      <h2 class="display" id="results-title">{{ !loading ? (searched ? (events.length === 1 ? events.length + ' event found' : events.length + ' events found') : 'All events') : 'Loading events' }}</h2>
     </div>
 
     <div id="results" class="grid" aria-live="polite">
@@ -79,7 +80,7 @@
         <div class="skeleton__line skeleton__line--short"></div>
       </div>
 
-      <a class="card" ng-repeat="event in results"
+      <a class="card" ng-repeat="event in events"
          ng-href="event.html#id={{ event.event_id }}" data-reveal
          ng-style="{'transition-delay': ($index * 80) + 'ms'}">
         <div class="card__media">
@@ -101,8 +102,7 @@
       </a>
     </div>
 
-    <p class="results-hint" ng-if="!searched && !loading">Use the form above to search for events.</p>
-    <p class="results-empty" ng-if="searched && !loading && results.length === 0">No matching events. Try adjusting your filters.</p>
+    <p class="results-empty" ng-if="!loading && events.length === 0">No events match your search. Try clearing the filters.</p>
   </section>
 
   <footer class="site-footer">
@@ -111,7 +111,7 @@
       <span class="site-footer__copy">&copy; 2026 PingXiang Charity</span>
       <nav class="site-footer__links">
         <a href="index.html">Home</a>
-        <a href="search.html">Search</a>
+        <a href="events.html">Events</a>
       </nav>
     </div>
   </footer>

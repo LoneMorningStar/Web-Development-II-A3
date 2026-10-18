@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('./event_db');
 
 const app = express();
@@ -23,7 +24,12 @@ app.use('/api/registrations', require('./routes/registrations'));
 app.use('/api/users',         require('./routes/users'));
 app.use('/api',               require('./routes/upload'));
 
-app.get('/', (req, res) => res.send('Charity Events API is running'));
+// Serve the AngularJS frontend (clientside) so a single Node.js app hosts both
+// the static site and the /api backend together on cPanel (Passenger).
+const clientDir = path.join(__dirname, '..', 'clientside');
+app.use(express.static(clientDir));
+
+app.get('/', (req, res) => res.sendFile(path.join(clientDir, 'index.html')));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
