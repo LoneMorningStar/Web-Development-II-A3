@@ -5,7 +5,7 @@ Node.js + Express RESTful API，以及两个 AngularJS 前端（公共客户端�
 
 - **数据库：** MySQL（`charityevents_db`）
 - **RESTful API：** Node.js + Express + `mysql2`
-- **客户端：** HTML + AngularJS 1.8（`$http`、控制器、服务、指令、过滤器）
+- **客户端：** HTML + AngularJS 1.8（`http`、控制器、服务、指令、过滤器）
 - **管理端：** HTML + AngularJS（活动的完整增删改查）
 - **鉴权：** 用户注册 / 登录（bcryptjs 密码哈希），以及管理员专属的活动管理区域
 
