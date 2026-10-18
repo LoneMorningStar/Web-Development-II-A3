@@ -17,11 +17,14 @@ API, and two AngularJS front-ends (a public client site and an admin site).
 
 - Public client site
   - Home page with upcoming events (category badges, funding progress)
-  - Search / filter by date, location and category
+  - Events overview page to browse all events, with search / filter by date,
+    location and category
   - Event detail page with the list of registered attendees
   - Registration page to reserve tickets for an event (raises the event's
     `raised_amount` by `ticket_price × tickets`)
   - User registration and login (modal)
+  - User profile page: view personal details and attended events, and update
+    anything except the login email
 - Admin site / admin pages
   - Dashboard listing every event (Upcoming, Past, Suspended)
   - Create, update, and delete events
@@ -42,17 +45,18 @@ charity-events-project/
 │   │   ├── categories.js        # /api/categories
 │   │   ├── organisations.js     # /api/organisations
 │   │   ├── registrations.js     # /api/registrations (create)
-│   │   ├── users.js             # /api/users (register + login)
+│   │   ├── users.js             # /api/users (register + login + profile)
 │   │   └── upload.js            # /api/upload (event images)
 │   ├── package.json
 │   └── .env.example
 ├── clientside/                  # public site
 │   ├── index.html               # Home
-│   ├── search.html              # Search / filter
+│   ├── events.html              # Events overview (browse all + search/filter)
 │   ├── event.html               # Event detail + registrations
 │   ├── register.html            # Event registration
 │   ├── login.html               # Login (modal)
 │   ├── signup.html              # Sign up
+│   ├── profile.html             # User profile
 │   ├── admin.html               # Admin: manage events
 │   ├── event-form.html          # Admin: create / edit event
 │   ├── css/style.css
@@ -155,6 +159,8 @@ npx serve .              # http://localhost:5501
 | POST   | `/api/registrations`            | Register for an event                        |
 | POST   | `/api/users/register`           | Create a user account                        |
 | POST   | `/api/users/login`              | Log in and return the user                   |
+| GET    | `/api/users/:id`                | User profile + attended events               |
+| PUT    | `/api/users/:id`                | Update user profile (email unchanged)        |
 | POST   | `/api/upload`                   | Upload an event image (admin)                |
 
 Admin routes require an `X-Admin-User` header with the logged-in admin's

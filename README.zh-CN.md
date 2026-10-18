@@ -15,10 +15,11 @@ Node.js + Express RESTful API，以及两个 AngularJS 前端（公共客户端�
 
 - 公共客户端
   - 首页展示即将举办的活动（分类徽章、募款进度）
-  - 按日期 / 地点 / 分类搜索筛选
+  - 活动总页浏览全部活动，支持按日期 / 地点 / 分类搜索筛选
   - 活动详情页，展示已报名参与者列表
   - 报名页预订活动票券（报名后活动 `raised_amount` 会按 `票单价 × 票数` 增加）
   - 用户注册与登录（弹窗式）
+  - 用户个人中心：查看个人信息与已参加活动，修改除登录邮箱外的信息
 - 管理端 / 管理页面
   - 仪表盘列出所有活动（即将举办、已结束、已暂停）
   - 创建、修改、删除活动
@@ -39,17 +40,18 @@ charity-events-project/
 │   │   ├── categories.js        # /api/categories
 │   │   ├── organisations.js     # /api/organisations
 │   │   ├── registrations.js     # /api/registrations（创建报名）
-│   │   ├── users.js             # /api/users（注册 + 登录）
+│   │   ├── users.js             # /api/users（注册 + 登录 + 个人中心）
 │   │   └── upload.js            # /api/upload（活动图片上传）
 │   ├── package.json
 │   └── .env.example
 ├── clientside/                  # 公共站点
 │   ├── index.html               # 首页
-│   ├── search.html              # 搜索 / 筛选
+│   ├── events.html              # 活动总页（浏览全部 + 搜索 / 筛选）
 │   ├── event.html               # 活动详情 + 报名列表
 │   ├── register.html            # 活动报名
 │   ├── login.html               # 登录（弹窗）
 │   ├── signup.html              # 注册
+│   ├── profile.html             # 用户个人中心
 │   ├── admin.html               # 管理：活动列表
 │   ├── event-form.html          # 管理：创建 / 编辑活动
 │   ├── css/style.css
@@ -152,6 +154,8 @@ npx serve .              # http://localhost:5501
 | POST   | `/api/registrations`            | 报名活动                                    |
 | POST   | `/api/users/register`           | 创建用户账号                                |
 | POST   | `/api/users/login`              | 登录并返回用户信息                          |
+| GET    | `/api/users/:id`                | 用户资料 + 已参加活动                        |
+| PUT    | `/api/users/:id`                | 更新用户资料（邮箱不可改）                  |
 | POST   | `/api/upload`                   | 上传活动图片（管理员）                      |
 
 管理员路由要求携带 `X-Admin-User` 请求头，值为已登录管理员的 `user_id`
