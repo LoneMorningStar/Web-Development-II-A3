@@ -6,7 +6,7 @@ API, and two AngularJS front-ends (a public client site and an admin site).
 
 - **Database:** MySQL (`charityevents_db`)
 - **RESTful API:** Node.js + Express + `mysql2`
-- **Client:** HTML + AngularJS 1.8 (`$http`, controllers, services, directives, filters)
+- **Client:** HTML + AngularJS 1.8 (`http`, controllers, services, directives, filters)
 - **Admin:** HTML + AngularJS (full C.R.U.D. for events)
 - **Auth:** user registration / login with password hashing (bcryptjs), plus an
   admin-only area for managing events
