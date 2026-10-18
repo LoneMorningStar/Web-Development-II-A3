@@ -25,6 +25,8 @@ API, and two AngularJS front-ends (a public client site and an admin site).
   - User registration and login (modal)
   - User profile page: view personal details and attended events, and update
     anything except the login email
+  - Live weather in the navigation bar, fetched from the free Open-Meteo API
+    (no API key required)
 - Admin site / admin pages
   - Dashboard listing every event (Upcoming, Past, Suspended)
   - Create, update, and delete events
@@ -59,6 +61,7 @@ charity-events-project/
 │   ├── profile.html             # User profile
 │   ├── admin.html               # Admin: manage events
 │   ├── event-form.html          # Admin: create / edit event
+│   ├── favicon.svg              # site favicon (Angular mark)
 │   ├── css/style.css
 │   ├── images/                  # event images served to the browser
 │   ├── videos/hero.mp4

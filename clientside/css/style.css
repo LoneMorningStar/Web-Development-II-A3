@@ -116,10 +116,18 @@ img { display: block; max-width: 100%; }
   transition: background-color 0.3s ease;
 }
 .site-nav__pill:hover { background: rgba(43, 36, 29, 0.06); }
-.site-nav__flower {
+.site-nav__weather {
   display: none;
+  align-items: center;
+  gap: 0.4rem;
   color: var(--ink-90);
+  font-size: 0.875rem;
+  line-height: 1;
+  white-space: nowrap;
 }
+.site-nav__weather .icon { color: var(--accent); }
+.site-nav__weather-temp { font-weight: 600; }
+.site-nav__weather-city { color: var(--ink-60); }
 .site-nav__burger {
   display: flex;
   flex-direction: column;
@@ -143,7 +151,7 @@ img { display: block; max-width: 100%; }
 /* navbar entrance */
 .site-nav__logo,
 .site-nav__pill,
-.site-nav__flower,
+.site-nav__weather,
 .site-nav__burger {
   opacity: 0;
   transform: translateY(-16px);
@@ -152,7 +160,7 @@ img { display: block; max-width: 100%; }
 .mounted .site-nav__logo { opacity: 1; transform: none; transition-delay: 0ms; }
 .mounted .site-nav__pill,
 .mounted .site-nav__burger { opacity: 1; transform: none; transition-delay: 200ms; }
-.mounted .site-nav__flower { opacity: 1; transform: none; transition-delay: 400ms; }
+.mounted .site-nav__weather { opacity: 1; transform: none; transition-delay: 500ms; }
 
 /* ---------- Full-screen overlay menu ---------- */
 .overlay {
@@ -1142,7 +1150,7 @@ img { display: block; max-width: 100%; }
   .site-nav__inner { height: 80px; }
   .site-nav__logo { font-size: 1.5rem; }
   .site-nav__pill { display: inline-flex; }
-  .site-nav__flower { display: block; }
+  .site-nav__weather { display: flex; }
   .site-nav__burger { display: none; }
   .overlay a { font-size: 3.75rem; }
   .hero__fg { padding-bottom: 6rem; }
@@ -1379,7 +1387,7 @@ img { display: block; max-width: 100%; }
     transition-delay: 0ms !important;
   }
   [data-reveal],
-  .site-nav__logo, .site-nav__pill, .site-nav__flower, .site-nav__burger,
+  .site-nav__logo, .site-nav__pill, .site-nav__weather, .site-nav__burger,
   .hero__title, .hero__sub, .hero__cta, .hero__video,
   .page-hero .eyebrow, .page-hero__title, .page-hero__sub,
   .search-form__grid .field {

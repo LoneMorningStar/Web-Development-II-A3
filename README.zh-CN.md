@@ -20,6 +20,7 @@ Node.js + Express RESTful API，以及两个 AngularJS 前端（公共客户端�
   - 报名页预订活动票券（报名后活动 `raised_amount` 会按 `票单价 × 票数` 增加）
   - 用户注册与登录（弹窗式）
   - 用户个人中心：查看个人信息与已参加活动，修改除登录邮箱外的信息
+  - 导航栏实时天气（Open-Meteo 免费接口，无需 API key）
 - 管理端 / 管理页面
   - 仪表盘列出所有活动（即将举办、已结束、已暂停）
   - 创建、修改、删除活动
@@ -54,6 +55,7 @@ charity-events-project/
 │   ├── profile.html             # 用户个人中心
 │   ├── admin.html               # 管理：活动列表
 │   ├── event-form.html          # 管理：创建 / 编辑活动
+│   ├── favicon.svg              # 网站图标（Angular 标志）
 │   ├── css/style.css
 │   ├── images/                  # 活动图片（浏览器可直接访问）
 │   ├── videos/hero.mp4

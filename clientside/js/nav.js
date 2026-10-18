@@ -43,9 +43,6 @@ window.esc = function (s) {
   var overlay = document.getElementById('overlay');
   var pill = document.getElementById('nav-toggle');
 
-  var flower = document.getElementById('nav-flower');
-  if (flower) flower.innerHTML = window.ICO.flower(28);
-
   setTimeout(function () {
     document.documentElement.classList.add('mounted');
   }, 100);
