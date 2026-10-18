@@ -153,6 +153,14 @@ npx serve .              # http://localhost:5501
 |---------------------|-----------|
 |     10086@qq.com    | 1008610086|
 
+## Seeded demo accounts
+
+25 client accounts are seeded for demonstration. Each email is a 6-8 digit
+number followed by `@qq.com`, and both the password and the phone number are
+the same digits (e.g. `58652055@qq.com` / `58652055`). These accounts are
+randomly enrolled across all events — about 12 attendees per event, minimum
+10 — and their ticket donations never exceed each event's fundraising goal.
+
 
 
 ## API endpoints
