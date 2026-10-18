@@ -240,11 +240,13 @@ angular.module('charityApp', [])
           params: {
             latitude: LAT,
             longitude: LON,
-            current: 'temperature_2m,weather_code',
+            current: 'temperature_2m,relative_humidity_2m,weather_code',
+            daily: 'temperature_2m_max,temperature_2m_min',
+            forecast_days: 1,
             timezone: 'auto'
           }
         }).then(function (res) {
-          return res.data.current;
+          return { now: res.data.current, today: res.data.daily };
         });
       }
     };
@@ -283,15 +285,24 @@ angular.module('charityApp', [])
       restrict: 'E',
       template: '<span class="site-nav__weather"></span>',
       link: function (scope, element) {
-        WeatherService.current().then(function (c) {
+        WeatherService.current().then(function (w) {
+          var c = w.now;
           var d = describe(c.weather_code);
           var temp = Math.round(c.temperature_2m);
+          var hi = Math.round(w.today.temperature_2m_max[0]);
+          var lo = Math.round(w.today.temperature_2m_min[0]);
+          var hum = Math.round(c.relative_humidity_2m);
           element.html(
             wsvg(ICONS[d.icon]) +
             '<span class="site-nav__weather-temp">' + temp + '&deg;</span>' +
-            '<span class="site-nav__weather-city">Pingxiang</span>'
+            '<span class="site-nav__weather-city">Pingxiang</span>' +
+            '<span class="weather-tip" role="tooltip">' +
+              '<span class="weather-tip__title">Pingxiang &middot; ' + d.label + '</span>' +
+              '<span class="weather-tip__row"><span>Current</span><b>' + temp + '&deg;C</b></span>' +
+              '<span class="weather-tip__row"><span>High / Low</span><b>' + hi + '&deg; / ' + lo + '&deg;</b></span>' +
+              '<span class="weather-tip__row"><span>Humidity</span><b>' + hum + '%</b></span>' +
+            '</span>'
           );
-          element.attr('title', d.label + ', ' + temp + '\u00B0C');
         });
       }
     };
