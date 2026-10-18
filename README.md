@@ -146,6 +146,13 @@ npx serve .              # http://localhost:5501
 |---------------------|-----------|
 | admin@pingxiang.org | admin123  |
 
+## client
+| Email               | Password  |
+|---------------------|-----------|
+|     10086@qq.com    | 1008610086|
+
+
+
 ## API endpoints
 
 | Method | Path                            | Purpose                                      |
@@ -182,3 +189,4 @@ PORT=3000
 ```
 
 Copy `.env.example` to `.env` and fill in your own values.
+
