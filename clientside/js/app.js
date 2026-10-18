@@ -283,8 +283,11 @@ angular.module('charityApp', [])
 
     return {
       restrict: 'E',
+      replace: true,
       template: '<span class="site-nav__weather"></span>',
       link: function (scope, element) {
+        element.on('mouseenter', function () { element.addClass('tip-open'); });
+        element.on('mouseleave', function () { element.removeClass('tip-open'); });
         WeatherService.current().then(function (w) {
           var c = w.now;
           var d = describe(c.weather_code);

@@ -150,6 +150,7 @@ img { display: block; max-width: 100%; }
   pointer-events: none;
   cursor: default;
 }
+.site-nav__weather.tip-open .weather-tip,
 .site-nav__weather:hover .weather-tip {
   opacity: 1;
   visibility: visible;
