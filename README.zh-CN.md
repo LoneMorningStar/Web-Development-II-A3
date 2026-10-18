@@ -141,16 +141,36 @@ npx serve .              # http://localhost:5501
 |---------------------|----------|
 | admin@pingxiang.org | admin123 |
 
-## 用户
-| 邮箱                |   密码    |
-|---------------------|-----------|
-|     10086@qq.com    | 1008610086|
-
 ## 演示账户
 
-已预置 25 个演示账户。邮箱为 6-8 位数字加 `@qq.com`，密码和电话为相同的
-数字（如 `58652055@qq.com` / `58652055`）。这些账户已随机报名所有活动
-（每个活动约 12 人、最少 10 人），且捐款总额不超过各活动的预筹集金额。
+| 邮箱                | 密码      | 姓名        |
+|---------------------|-----------|-------------|
+| 111111@qq.com       | 111111    | 111         |
+| 58652055@qq.com     | 58652055  | Finn Guo    |
+| 759720@qq.com       | 759720    | Hannah Cao  |
+| 106600@qq.com       | 106600    | James Zheng |
+| 70956197@qq.com     | 70956197  | Hannah Cao  |
+| 21003492@qq.com     | 21003492  | Nora Xu     |
+| 470820@qq.com       | 470820    | Felix Zhou  |
+| 6717522@qq.com      | 6717522   | Henry Yang  |
+| 758979@qq.com       | 758979    | James Wang  |
+| 682652@qq.com       | 682652    | Amelia Zhu  |
+| 614689@qq.com       | 614689    | Jack Hu     |
+| 1342081@qq.com      | 1342081   | Isla Feng   |
+| 816902@qq.com       | 816902    | James Yang  |
+| 46222053@qq.com     | 46222053  | Sophia Guo  |
+| 2882696@qq.com      | 2882696   | Logan Feng  |
+| 6691963@qq.com      | 6691963   | Ivy Yang    |
+| 82938013@qq.com     | 82938013  | Olivia Hu   |
+| 168573@qq.com       | 168573    | Sophia Guo  |
+| 3115254@qq.com      | 3115254   | Mia Xie     |
+| 3874848@qq.com      | 3874848   | Olivia Luo  |
+| 248362@qq.com       | 248362    | Jack Xiao   |
+| 32469985@qq.com     | 32469985  | Amelia Ma   |
+| 555837@qq.com       | 555837    | Nora Zhou   |
+| 32796228@qq.com     | 32796228  | Lucas Lin   |
+| 2301944@qq.com      | 2301944   | Owen Zhao   |
+| 379436@qq.com       | 379436    | Ruby Wang   |
 
 ## API 端点
 

@@ -148,18 +148,36 @@ npx serve .              # http://localhost:5501
 |---------------------|-----------|
 | admin@pingxiang.org | admin123  |
 
-## client
-| Email               | Password  |
-|---------------------|-----------|
-|     10086@qq.com    | 1008610086|
+## Demo account
 
-## Seeded demo accounts
-
-25 client accounts are seeded for demonstration. Each email is a 6-8 digit
-number followed by `@qq.com`, and both the password and the phone number are
-the same digits (e.g. `58652055@qq.com` / `58652055`). These accounts are
-randomly enrolled across all events — about 12 attendees per event, minimum
-10 — and their ticket donations never exceed each event's fundraising goal.
+| Email               | Password  | Name        |
+|---------------------|-----------|-------------|
+| 111111@qq.com       | 111111    | 111         |
+| 58652055@qq.com     | 58652055  | Finn Guo    |
+| 759720@qq.com       | 759720    | Hannah Cao  |
+| 106600@qq.com       | 106600    | James Zheng |
+| 70956197@qq.com     | 70956197  | Hannah Cao  |
+| 21003492@qq.com     | 21003492  | Nora Xu     |
+| 470820@qq.com       | 470820    | Felix Zhou  |
+| 6717522@qq.com      | 6717522   | Henry Yang  |
+| 758979@qq.com       | 758979    | James Wang  |
+| 682652@qq.com       | 682652    | Amelia Zhu  |
+| 614689@qq.com       | 614689    | Jack Hu     |
+| 1342081@qq.com      | 1342081   | Isla Feng   |
+| 816902@qq.com       | 816902    | James Yang  |
+| 46222053@qq.com     | 46222053  | Sophia Guo  |
+| 2882696@qq.com      | 2882696   | Logan Feng  |
+| 6691963@qq.com      | 6691963   | Ivy Yang    |
+| 82938013@qq.com     | 82938013  | Olivia Hu   |
+| 168573@qq.com       | 168573    | Sophia Guo  |
+| 3115254@qq.com      | 3115254   | Mia Xie     |
+| 3874848@qq.com      | 3874848   | Olivia Luo  |
+| 248362@qq.com       | 248362    | Jack Xiao   |
+| 32469985@qq.com     | 32469985  | Amelia Ma   |
+| 555837@qq.com       | 555837    | Nora Zhou   |
+| 32796228@qq.com     | 32796228  | Lucas Lin   |
+| 2301944@qq.com      | 2301944   | Owen Zhao   |
+| 379436@qq.com       | 379436    | Ruby Wang   |
 
 
 
